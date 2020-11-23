@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import * as fb from "../firebase";
-import store from '../store'
+import store from "../store";
 
 Vue.use(VueRouter);
 
@@ -32,12 +32,10 @@ const routes = [
       requiresAuth: true,
       requiresAdmin: true,
     },
-    beforeEnter: (to,from,next) => {
-      if(store.state.userProfile.admin === undefined)
-      next(false)
-      else
-      next()
-    }
+    beforeEnter: (to, from, next) => {
+      if (store.state.userProfile.admin === undefined) next(false);
+      else next();
+    },
   },
   {
     path: "*",
@@ -49,19 +47,16 @@ const router = new VueRouter({
   routes,
 });
 
-
 router.beforeEach((to, from, next) => {
   const currentUser = fb.auth.currentUser;
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   if (requiresAuth && !currentUser) {
     next("/");
   } else if (!requiresAuth && currentUser) {
-    next('/dashboard')
-  }
- else {
-    next()
+    next("/dashboard");
+  } else {
+    next();
   }
 });
-
 
 export default router;
